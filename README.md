@@ -6,6 +6,9 @@ To download the package, type the following at the R command line:
 
 ```r
 install.packages("devtools")
+if(!require("knitr")){
+  install.packages("knitr")
+}
 devtools::install_github("ShirunShen/tri2basis", build_vignettes = TRUE)
 ```
 
