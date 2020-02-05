@@ -11,7 +11,7 @@ beval(v.se, t.se, d.se, x.se, y.se)
 one vertex}
 
 \item{t.se}{the n*3 triangle indices. Each row represents the number of
-three vertices that forms a triangle. the order of vertices should be
+three vertices that forms a triangle. The order of vertices should be
 counterclockwise}
 
 \item{d.se}{degree of polynomial functions}

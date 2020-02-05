@@ -3,7 +3,7 @@
 #' @param v.se the N*2 vertices matrix. Each row represents the location of
 #' one vertex
 #' @param t.se the n*3 triangle indices. Each row represents the number of
-#' three vertices that forms a triangle. the order of vertices should be
+#' three vertices that forms a triangle. The order of vertices should be
 #' counterclockwise
 #' @param d.se degree of polynomial functions
 #' @param x.se the x coordinate of evaluated points for basis functions

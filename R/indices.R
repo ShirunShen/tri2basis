@@ -1,5 +1,3 @@
-#' @title indices function
-#' @description generate the (i,j,k) indices matrix such that i+j+k=d
 indices=function(d.in){
   #generate indices i,j,k: i+j+k=d.in
   m.in=(d.in+1)*(d.in+2)/2

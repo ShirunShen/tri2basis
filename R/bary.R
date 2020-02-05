@@ -1,10 +1,3 @@
-#' @title barycentric coordinates
-#' @description obtain the barycentric coordinates
-#' @param v1.ba the location of the first node in the target triangle
-#' @param v2.ba the location of the second node in the target triangle
-#' @param v3.ba the location of the third node in the target triangle
-#' @param x.ba the x coordinate of the evaluated points
-#' @param y.ba the y coordinate of the evaluated points
 bary=function(v1.ba,v2.ba,v3.ba,x.ba,y.ba){
   #return bary centric coordinates
   one.ba=matrix(1,1,length(x.ba))
