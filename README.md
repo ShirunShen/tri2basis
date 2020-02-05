@@ -17,6 +17,10 @@ devtools::install_github("ShirunShen/tri2basis", build_vignettes = TRUE)
 # Examples
 In the vignettes of this package, there are two toy examples that help illustrate how to use this package. Users can find the vignettes in the document **User guides, package vignettes and other documentation** of **tri2basis** package page.
 
+```r
+help(package="tri2basis")
+```
+Find **User guides, package vignettes and other documentation** of **tri2basis**.
 
 # References
 
