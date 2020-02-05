@@ -1,0 +1,12 @@
+load("/Users/ryan/Desktop/Package/tri2basis/vignettes/point.dat")
+point
+load("/Users/ryan/Desktop/Package/tri2basis/vignettes/point.dat")
+point
+load("/Users/ryan/Desktop/Package/tri2basis/vignettes/point.dat")
+point
+load("/Users/ryan/Desktop/Package/tri2basis/vignettes/point.dat")
+load("/Users/ryan/Desktop/Package/tri2basis/vignettes/edges.dat")
+edges
+load("/Users/ryan/Desktop/Package/tri2basis/vignettes/point.dat")
+point
+edges

@@ -1,0 +1,207 @@
+---
+title: "tri2basis-tutorial"
+output: rmarkdown::html_vignette
+author: "Shirun Shen (shirun.stat@gmail.com)"
+date: "February 4, 2020"
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: reference.bib
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+**tri2basis** is a package that can be applied to construct the bivariate spline basis functions on triangulation. The bivariate spline on triangulation are significantly helpful in analyzing the data from irregular 2 dimensional domains [@Zhou2014smoothing]. The basic algorithms of **tri2basis** are based on @Zhou2014smoothing and @Zhou2014principal. For further details, one can refer to the papers.
+
+In this tutorial, I will shortly summarize the functions in this package. And then two examples will be presented to illustrate how to construct the bivariate spline basis functions on triangulation.
+
+# Prerequisites
+## Domain and Triangulation
+To construct the bivariate spline basis functions, it requires the clear boundary of the domains. And the triangulation, i.e., the collection of triangles, are constructed manually based on such domains and the data distribution.
+
+And we require the degree $d$ of Bernstein polynomial functions and the order $r$ of derivatives smoothness condition on the common edges [@Zhou2014smoothing].
+
+## Basic Functions
+There are three basic functions in **tri2basis** listed below.
+
+1. beval
+1. smoothness
+1. energy
+
+*beval* is the function to construct the raw bivariate spline basis functions on triangulation, which are based on Bernstein polynomial functions on each triangles. *smoothness* is the function to construct the derivative smoothness matrix $\mathbf{H}$. And *energy* function are based on thin-plate penalty. It can be applied to obtain the raw penalty matrix. The details of each function can be referred to the Reference Manual of this package.
+
+# Example 1: Rectangle
+The domain of our first example is a rectangle with a hole in the middle. And the triangulation constructed based on this domain are shown in the following figure.
+
+```{r rec_triangulation, echo=TRUE, fig.align="center"}
+load("point.dat") # each row represents the locations of vertices
+head(point,5)
+load("edges.dat") 
+head(edges,5) # each row represents the indices of vertices that form a triangle
+
+par(pty="s",mar=c(3,3,2,2)) ##make the plot region as square
+plot(point,type="n",xlab="x",ylab="y",main="domain and triangulations",asp=1)
+points(point[,1],point[,2],pch=1,cex=0.1)
+for(i in 1:nrow(edges)){
+  segments(point[edges[i,1],1],point[edges[i,1],2],
+           point[edges[i,2],1],point[edges[i,2],2],col="blue");
+  segments(point[edges[i,1],1],point[edges[i,1],2],
+           point[edges[i,3],1],point[edges[i,3],2],col="blue");
+  segments(point[edges[i,3],1],point[edges[i,3],2],
+           point[edges[i,2],1],point[edges[i,2],2],col="blue");
+}
+station = NULL
+set.seed(100)
+k=200      #number of data points
+count = 0
+while(count < k){
+  xloc <- runif(1,0,2)
+  yloc <- runif(1,0,2)
+  if(xloc < 0.5 | xloc > 1.5 | yloc < 0.5 | yloc > 1.5){
+    station <- rbind(station, c(xloc, yloc))
+    count = count + 1
+  }
+}  
+points(station[,1],station[,2],pch=2,cex=0.2,col="red")
+```
+
+Then assume we have $k$ data points sampled from this domain, we will construct the bivariate spline basis functions that evaluated at these points.
+
+```{r example1, echo = TRUE}
+library(tri2basis)
+d <- 3         #degree of Bernstein polynomial functions
+r <- 1         #order of derivative smoothness condition
+
+# construct the raw basis functions #
+rawbasis <- beval(point, edges, d, station[,1], station[,2])
+dim(rawbasis)
+
+# construct the raw penalty matrix #
+rawpenalty <- energy(point, edges, d, index.e=1)
+dim(rawpenalty)
+
+# construct the smoothness matrix H #
+H = smoothness(point,edges,d,r)
+dim(H)
+
+# linear constraints on common edges that forms the new basis and penalty #
+qrdecom = qr(t(H))
+R = qr.R(qrdecom)
+Q = qr.Q(qrdecom, TRUE)
+nh = nrow(H)
+Q2 = Q[,(qrdecom$rank+1):ncol(Q)] # refer to the reference papers
+
+ortho = solve(qr.R(qr(rawbasis%*%Q2))) * sqrt(nrow(rawbasis)/3) #Gran-Schmidt Orthonormalization, where 3 is the area of the domain
+omat = Q2 %*% ortho
+dim(omat)
+
+# final basis functions and penalty matrix 
+basis = rawbasis %*% omat
+dim(basis)
+penalty = t(omat) %*% rawpenalty %*% omat
+dim(penalty)
+```
+
+# Example 2: Texas State
+The second example is Texas state. In @Zhou2014principal, the Texas temperature data has been analyzed. The temparature data are collected from 52 weather stations that are sparsely located in Texas state. Now we will discuss how to construct the bivariate spline basis for such stations. We first design the triangulation manually. The domain and the designed triangulation are presented below.
+
+```{r texas, echo=TRUE, fig.align="center"}
+Texasstation = read.table("texasstations.dat",sep="")
+Texasstation = Texasstation[,2:3]
+Texasboundary=list(read.table("texasboundary.dat",header=T))
+names(Texasboundary[[1]])=c("x","y")
+V=matrix(c(-106.59719, 31.99396,
+           -103.07511, 31.99396,
+           -103.04646, 36.49,
+           -100.00405,36.5,
+           -99.99833, 34.56081,
+           -96.91581, 33.96494,
+           -94.0967, 33.98678,
+           -93.30778, 30.05110,
+           -97.23559, 27.79319,
+           -97.09073, 25.7812,
+           -99.63558, 27.45041,
+           -101.63385, 29.78235,
+           -103.66106, 28.58594,
+           -99.80000, 31.5000,
+           -97.00000, 30.05000,
+           -99.20000, 26.30000),ncol=2,byrow=T)
+
+Tri=matrix(c(2,1,13,3,2,5,4,3,5,5,2,14,5,14,6,6,14,15,6,15,7,7,15,8,8,15,9,9,15,11,
+             10,9,11,16,10,11,11,15,12,12,15,14,12,14,2,12,2,13),ncol=3,byrow=T)
+
+par(pty="s",mar=c(4,4,2,2))
+plot(Texasboundary[[1]],type="l",xlab="",ylab="",xlim=c(-107,-93),cex.lab=1.3)
+mtext("Longitude", side=1, line=2)
+mtext("Latitude", side=2, line=2)
+points(Texasstation[,1],Texasstation[,2],pch=2,cex=.2,col="red")
+for(i in 1:nrow(Tri)){
+  segments(V[Tri[i,1],1],V[Tri[i,1],2],
+           V[Tri[i,2],1],V[Tri[i,2],2],col="blue");
+  segments(V[Tri[i,1],1],V[Tri[i,1],2],
+           V[Tri[i,3],1],V[Tri[i,3],2],col="blue");
+  segments(V[Tri[i,3],1],V[Tri[i,3],2],
+           V[Tri[i,2],1],V[Tri[i,2],2],col="blue");
+}
+```
+We then construct the bivariate spline basis functions that evaluated at these weather stations.
+
+```{r example2, echo=TRUE}
+d=3
+r=1
+
+# rawbasis
+Bstation = beval(V,Tri,d,Texasstation[,1],Texasstation[,2])
+dim(Bstation)
+
+# raw penalty matrix
+Ene=energy(V,Tri,d,1)
+dim(Ene)
+
+# smoothness matrix
+Ht = smoothness(V,Tri,d,r)
+dim(Ht)
+
+# linear constraints on common edges
+qrdecom=qr(t(Ht))
+R=qr.R(qrdecom)
+Q=qr.Q(qrdecom,TRUE)
+nh=nrow(H)
+Q2=Q[,(qrdecom$rank+1):ncol(Q)] #Q2 constraint
+
+# Gram-Schmidt orthonormalization
+m=70;n=70
+xm=seq(min(V[,1]),max(V[,1]),length=m)
+yn=seq(min(V[,2]),max(V[,2]),length=n)
+x=rep(xm,n)
+y=rep(yn,rep(m,n))
+if(!require("mgcv")){
+  install.packages("mgcv")
+}
+ind=inSide(Texasboundary,x,y)
+area=tri2basis::emp.area(Texasboundary,10^6) #calculate the area of the domain
+area
+B1 = beval(V,Tri,d,x[ind],y[ind])
+R = qr.R(qr(B1%*%Q2))
+ortho = solve(R)*sqrt(length(x[ind])/area)
+omat = Q2%*%ortho #Gram-Schmidt Orthonormalization
+dim(omat)
+
+# final basis and penalty
+basis_texas = Bstation%*%omat
+dim(basis_texas)
+penalty_texas = t(omat)%*%Ene%*%(omat)
+dim(penalty_texas)
+```
+
+
+
+`r if (knitr::is_html_output()) '# References {-}'`
