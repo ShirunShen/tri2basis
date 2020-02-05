@@ -42,10 +42,10 @@ There are three basic functions in **tri2basis** listed below.
 The domain of our first example is a rectangle with a hole in the middle. And the triangulation constructed based on this domain are shown in the following figure.
 
 ```{r rec_triangulation, echo=TRUE, fig.align="center"}
-load("point.dat") # each row represents the locations of vertices
-head(point,5)
+load("point.dat") # each row represents the locations of vertices that form a triangle
+head(point,10)
 load("edges.dat") 
-head(edges,5) # each row represents the indices of vertices that form a triangle
+head(edges,10) # each row represents the indices of vertices that form a triangle, the order of vertices of each triangle, say (v1, v2, v3), should be counterclockwise in the surface
 
 par(pty="s",mar=c(3,3,2,2)) ##make the plot region as square
 plot(point,type="n",xlab="x",ylab="y",main="domain and triangulations",asp=1)
