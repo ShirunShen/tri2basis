@@ -18,7 +18,7 @@ devtools::install_github("ShirunShen/tri2basis", build_vignettes = TRUE)
 In the vignettes of this package, there are two toy examples that help illustrate how to use this package. Users can find the vignettes in the document **User guides, package vignettes and other documentation** of **tri2basis** package page.
 
 
-# References and Citation
+# References
 
 Zhou, Lan, and Huijun Pan. 2014a. “Principal Component Analysis of Two-Dimensional Functional Data.” Journal Article. Journal of Computational and Graphical Statistics 23 (3): 779–801.
 
