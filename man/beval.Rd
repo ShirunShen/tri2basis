@@ -7,10 +7,10 @@
 beval(v.se, t.se, d.se, x.se, y.se)
 }
 \arguments{
-\item{v.se}{the N*2 vertices matrix. Each row represents the location of
+\item{v.se}{the \eqn{N\times 2} vertices matrix. Each row represents the location of
 one vertex}
 
-\item{t.se}{the n*3 triangle indices. Each row represents the number of
+\item{t.se}{the \eqn{n\times 3} triangle indices. Each row represents the number of
 three vertices that forms a triangle. The order of vertices should be
 counterclockwise}
 

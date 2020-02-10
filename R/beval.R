@@ -1,8 +1,8 @@
 #' @title bivariate spline basis functions
 #' @description create bivariate spline basis functions on triangulation
-#' @param v.se the N*2 vertices matrix. Each row represents the location of
+#' @param v.se the \eqn{N\times 2} vertices matrix. Each row represents the location of
 #' one vertex
-#' @param t.se the n*3 triangle indices. Each row represents the number of
+#' @param t.se the \eqn{n\times 3} triangle indices. Each row represents the number of
 #' three vertices that forms a triangle. The order of vertices should be
 #' counterclockwise
 #' @param d.se degree of polynomial functions
