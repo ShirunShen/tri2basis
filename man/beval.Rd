@@ -16,9 +16,10 @@ counterclockwise}
 
 \item{d.se}{degree of polynomial functions}
 
-\item{x.se}{the x coordinate of evaluated points for basis functions}
-
-\item{y.se}{the y coordinate of evaluated points for basis functions}
+\item{x.se, y.se}{the x,y coordinate of evaluated points for basis functions}
+}
+\value{
+the basis matrix whose each row represents the basis vector of each evaluated point
 }
 \description{
 create bivariate spline basis functions on triangulation

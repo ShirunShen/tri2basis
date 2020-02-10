@@ -6,8 +6,8 @@
 #' three vertices that forms a triangle. The order of vertices should be
 #' counterclockwise
 #' @param d.se degree of polynomial functions
-#' @param x.se the x coordinate of evaluated points for basis functions
-#' @param y.se the y coordinate of evaluated points for basis functions
+#' @param x.se,y.se the x,y coordinate of evaluated points for basis functions
+#' @return the basis matrix whose each row represents the basis vector of each evaluated point
 #' @export
 beval=function(v.se,t.se,d.se,x.se,y.se){
   #create b-spline basis
